@@ -1,11 +1,9 @@
 package me.schattgen.felis
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -39,20 +37,11 @@ class OnboardingActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, true)
-
-
-
-        /*        if (hasCompletedOnboarding()) {
-                    showSimpleInfoScreen()
-                    return
-                }*/
 
         binding = ActivityOnboardingBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = OnboardingAdapter(pages)
-        binding.viewPager.adapter = adapter
+        binding.viewPager.adapter = OnboardingAdapter(pages)
 
         TabLayoutMediator(binding.tabDots, binding.viewPager) { _: TabLayout.Tab, _: Int -> }
             .attach()
@@ -80,14 +69,12 @@ class OnboardingActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-
             v.setPadding(
                 bars.left + v.paddingLeft,
                 bars.top + v.paddingTop,
                 bars.right + v.paddingRight,
                 bars.bottom + v.paddingBottom
             )
-
             insets
         }
     }
@@ -101,24 +88,12 @@ class OnboardingActivity : AppCompatActivity() {
     }
 
     private fun completeOnboarding() {
-        getSharedPreferences("onboarding", Context.MODE_PRIVATE)
-            .edit()
-            .putBoolean("completed", true)
-            .apply()
-        showSimpleInfoScreen()
-    }
+        OnboardingPrefs.setCompleted(this, true)
 
-    private fun hasCompletedOnboarding(): Boolean {
-        return getSharedPreferences("onboarding", Context.MODE_PRIVATE)
-            .getBoolean("completed", false)
-    }
-
-    private fun showSimpleInfoScreen() {
-        val tv = TextView(this).apply {
-            text = getString(R.string.post_onboarding_info)
-            setPadding(48, 48, 48, 48)
+        val intent = Intent(this, MainActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        setContentView(tv)
+        startActivity(intent)
+        finish()
     }
-
 }
