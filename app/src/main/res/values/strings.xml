@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Felis</string>
     <string name="share_cleaned_link">Share cleaned link</string>
+    <string name="clean_selected_text">Clean link</string>
 
     <string name="onboarding_subtitle">Privacy-first link sharing, without the tracking junk.</string>
 
