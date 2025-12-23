@@ -67,16 +67,24 @@ class OnboardingActivity : AppCompatActivity() {
             }
         }
 
+        val initialLeft = binding.root.paddingLeft
+        val initialTop = binding.root.paddingTop
+        val initialRight = binding.root.paddingRight
+        val initialBottom = binding.root.paddingBottom
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val bars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+
             v.setPadding(
-                bars.left + v.paddingLeft,
-                bars.top + v.paddingTop,
-                bars.right + v.paddingRight,
-                bars.bottom + v.paddingBottom
+                initialLeft,
+                initialTop + bars.top + 20,
+                initialRight,
+                initialBottom
             )
+
             insets
         }
+
     }
 
     private fun updateNextButtonText(position: Int) {
