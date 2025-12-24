@@ -18,17 +18,17 @@ class OnboardingActivity : AppCompatActivity() {
     private val pages by lazy {
         listOf(
             OnboardingPage(
-                imageRes = R.drawable.ic_launcher_background,
+                imageRes = R.drawable.ic_launcher_round,
                 titleRes = R.string.onboarding_share_title,
                 descriptionRes = R.string.onboarding_share_desc
             ),
             OnboardingPage(
-                imageRes = R.drawable.ic_launcher_background,
+                imageRes = R.drawable.ic_launcher_round,
                 titleRes = R.string.onboarding_selection_title,
                 descriptionRes = R.string.onboarding_selection_desc
             ),
             OnboardingPage(
-                imageRes = R.drawable.ic_launcher_background,
+                imageRes = R.drawable.ic_launcher_round,
                 titleRes = R.string.onboarding_manual_title,
                 descriptionRes = R.string.onboarding_manual_desc
             )

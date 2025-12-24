@@ -9,23 +9,23 @@
     <string name="onboarding_next">Next</string>
     <string name="onboarding_get_started">Get started</string>
 
-    <string name="onboarding_share_title">Clean from the Share menu</string>
+    <string name="onboarding_share_title">Felis</string>
     <string name="onboarding_share_desc">
-    Share any link to LinkCleaner from your apps. We instantly strip tracking parameters, then open a new share sheet with a clean URL.
-</string>
+        Share any link or text to Felis from within your apps. Felis instantly strips out all tracking parameters and allows you to immediately share the cleaned up URL.
+    </string>
 
     <string name="onboarding_selection_title">Clean selected text</string>
     <string name="onboarding_selection_desc">
-    Select any text containing a link, hit Share, and send it to LinkCleaner. We detect and clean URLs inside longer messages too.
-</string>
+        Felis also integrates in your text selection context menu. Select text and tap "Clean link" to instantly clean the url without leaving your app!
+    </string>
 
-    <string name="onboarding_manual_title">Open LinkCleaner directly</string>
+    <string name="onboarding_manual_title">Open Felis directly</string>
     <string name="onboarding_manual_desc">
-    Open the app from your launcher to read tips, manage settings, or test cleaning before sending links to others.
-</string>
+        Open the app from your launcher to read tips, manage settings, or test cleaning before sending links to others.
+    </string>
 
     <string name="post_onboarding_info">
-        LinkCleaner is now ready.\n\nUse the Share button in apps like Spotify, Instagram, or Amazon and pick LinkCleaner to send privacy-friendly links.
+        LinkCleaner is now ready.\n\nUse the Share button in apps like Spotify, Instagram, or Amazon and pick Felis to send privacy-friendly links.
     </string>
 
     <string name="home_title">Clean link</string>
