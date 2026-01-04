@@ -1,4 +1,4 @@
-package me.schattgen.felis.ui.theme.home.components
+package me.schattgen.felis.ui.home.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

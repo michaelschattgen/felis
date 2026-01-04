@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import me.schattgen.felis.ui.theme.home.HomeRoute
+import me.schattgen.felis.ui.home.HomeRoute
 import me.schattgen.felis.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {

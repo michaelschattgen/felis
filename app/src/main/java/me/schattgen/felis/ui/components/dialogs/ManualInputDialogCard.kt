@@ -1,4 +1,4 @@
-package me.schattgen.felis.ui.theme.components.dialogs
+package me.schattgen.felis.ui.components.dialogs
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

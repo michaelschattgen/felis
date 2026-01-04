@@ -1,4 +1,4 @@
-package me.schattgen.felis.ui.theme.components.dialogs
+package me.schattgen.felis.ui.components.dialogs
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.window.Dialog
