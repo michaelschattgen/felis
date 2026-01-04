@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 import me.schattgen.felis.R
 import me.schattgen.felis.ui.home.components.AboutSheet
-import me.schattgen.felis.ui.theme.components.dialogs.ManualInputDialog
+import me.schattgen.felis.ui.components.dialogs.ManualInputDialog
 import me.schattgen.felis.utils.ClipboardUtils.readText
 import me.schattgen.felis.utils.LinkCleaner
 import me.schattgen.felis.utils.LinkCleaner.containsUrl
