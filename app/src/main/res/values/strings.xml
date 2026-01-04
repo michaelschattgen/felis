@@ -42,4 +42,13 @@
     <string name="snackbar_cleaned">Cleaned!</string>
     <string name="snackbar_copied">Copied to clipboard</string>
     <string name="clipboard_label">Cleaned link</string>
+
+    <string name="dialog_manual_input_title">Enter text</string>
+    <string name="dialog_manual_input_message">
+        No text or urls with tracking parameters have been found on your clipboard. Please enter the text you want to clean up below.
+    </string>
+    <string name="dialog_manual_input_label">Enter link or text</string>
+    <string name="dialog_manual_input_confirm">Clean &amp; Share</string>
+
+    <string name="common_cancel">Cancel</string>
 </resources>

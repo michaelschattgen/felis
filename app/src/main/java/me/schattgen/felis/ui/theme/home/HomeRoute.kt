@@ -6,14 +6,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 import me.schattgen.felis.R
+import me.schattgen.felis.ui.theme.components.dialogs.ManualInputDialog
 import me.schattgen.felis.ui.theme.home.components.AboutSheet
-import me.schattgen.felis.utils.ClipboardUtils
+import me.schattgen.felis.utils.ClipboardUtils.readText
 import me.schattgen.felis.utils.LinkCleaner
+import me.schattgen.felis.utils.LinkCleaner.containsUrl
+import me.schattgen.felis.utils.ShareUtils.shareText
 
 @Composable
 fun HomeRoute() {
@@ -21,29 +25,47 @@ fun HomeRoute() {
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    var input by remember { mutableStateOf("") }
-    var output by remember { mutableStateOf("") }
     var aboutOpen by remember { mutableStateOf(false) }
+    var manualInputOpen by rememberSaveable { mutableStateOf(false) }
+    var manualInput by rememberSaveable { mutableStateOf("") }
 
     val snackbarCleaned = stringResource(R.string.snackbar_cleaned)
-    val snackbarCopied = stringResource(R.string.snackbar_copied)
-    val clipboardLabel = stringResource(R.string.clipboard_label)
 
     HomeScreen(
         snackbarHostState = snackbarHostState,
-        input = input,
-        output = output,
-        onInputChange = { input = it },
         onCleanClick = {
-            output = LinkCleaner.cleanSharedText(input)
+            val clipboardText = readText(context)
+
+            val containsUrl = clipboardText?.let { containsUrl(it) }
+            if (containsUrl == false || clipboardText == null) {
+                manualInput = ""
+                manualInputOpen = true
+                return@HomeScreen
+            }
+
+            val cleaned = LinkCleaner.cleanSharedText(clipboardText)
+            shareText(context, cleaned)
+
             scope.launch { snackbarHostState.showSnackbar(snackbarCleaned) }
-        },
-        onCopyClick = {
-            ClipboardUtils.copyText(context, output, clipboardLabel)
-            scope.launch { snackbarHostState.showSnackbar(snackbarCopied) }
+
         },
         onAboutClick = { aboutOpen = true }
     )
+
+    if (manualInputOpen) {
+        ManualInputDialog(
+            open = manualInputOpen,
+            value = manualInput,
+            onValueChange = { manualInput = it },
+            onDismiss = { manualInputOpen = false },
+            onConfirm = {
+                val cleaned = LinkCleaner.cleanSharedText(manualInput.trim())
+                shareText(context, cleaned)
+                manualInputOpen = false
+                scope.launch { snackbarHostState.showSnackbar(snackbarCleaned) }
+            }
+        )
+    }
 
     if (aboutOpen) {
         AboutSheet(onDismiss = { aboutOpen = false })

@@ -40,29 +40,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import me.schattgen.felis.R
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     snackbarHostState: SnackbarHostState,
-    input: String,
-    output: String,
-    onInputChange: (String) -> Unit,
     onCleanClick: () -> Unit,
-    onCopyClick: () -> Unit,
     onAboutClick: () -> Unit
 ) {
-    val scope = rememberCoroutineScope()
-    val bringIntoViewRequester = remember { BringIntoViewRequester() }
-
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
 
@@ -120,60 +111,18 @@ fun HomeScreen(
                                 text = stringResource(R.string.home_title),
                                 style = MaterialTheme.typography.titleLarge
                             )
+
                             Text(
                                 text = stringResource(R.string.home_subtitle),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
 
-                            OutlinedTextField(
-                                value = input,
-                                onValueChange = onInputChange,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .bringIntoViewRequester(bringIntoViewRequester)
-                                    .onFocusEvent { state ->
-                                        if (state.isFocused) {
-                                            scope.launch { bringIntoViewRequester.bringIntoView() }
-                                        }
-                                    },
-                                singleLine = false,
-                                minLines = 3,
-                                label = { Text(stringResource(R.string.home_field_label)) },
-                            )
-
                             Button(
                                 onClick = onCleanClick,
-                                modifier = Modifier.align(Alignment.End),
-                                enabled = input.isNotBlank()
+                                modifier = Modifier.fillMaxWidth()
                             ) {
                                 Text(stringResource(R.string.home_clean_button))
-                            }
-
-                            if (output.isNotBlank()) {
-                                Spacer(Modifier.height(4.dp))
-
-                                Text(
-                                    text = stringResource(R.string.home_result_title),
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-
-                                SelectionContainer {
-                                    OutlinedCard(modifier = Modifier.fillMaxWidth()) {
-                                        Text(
-                                            text = output,
-                                            modifier = Modifier.padding(12.dp),
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                    }
-                                }
-
-                                TextButton(
-                                    modifier = Modifier.align(Alignment.End),
-                                    onClick = onCopyClick
-                                ) {
-                                    Text(stringResource(R.string.home_copy_button))
-                                }
                             }
                         }
                     }
@@ -186,7 +135,6 @@ fun HomeScreen(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 ) {
                     Icon(Icons.Outlined.Info, contentDescription = null)
-                    Spacer(Modifier.height(0.dp))
                     Text(
                         text = stringResource(R.string.home_about_button),
                         modifier = Modifier.padding(start = 8.dp)

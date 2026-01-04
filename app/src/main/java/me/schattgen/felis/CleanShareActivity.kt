@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import me.schattgen.felis.utils.LinkCleaner
-import kotlin.apply
+import me.schattgen.felis.utils.ShareUtils
 import kotlin.text.isNullOrBlank
 import kotlin.text.startsWith
 
@@ -30,22 +30,8 @@ class CleanShareActivity : ComponentActivity() {
 
         val cleanedText = LinkCleaner.cleanSharedText(sharedText)
 
-        val sendIntent = Intent(Intent.ACTION_SEND).apply {
-            putExtra(Intent.EXTRA_TEXT, cleanedText)
-            val subject = intent.getStringExtra(Intent.EXTRA_SUBJECT)
-            if (!subject.isNullOrBlank()) {
-                putExtra(Intent.EXTRA_SUBJECT, subject)
-            }
-        }
+        ShareUtils.shareText(this, cleanedText, chooserTitle = getString(R.string.share_cleaned_link))
 
-        sendIntent.setType(type)
-
-        val chooser = Intent.createChooser(
-            sendIntent,
-            getString(R.string.share_cleaned_link)
-        )
-
-        startActivity(chooser)
         finish()
     }
 }

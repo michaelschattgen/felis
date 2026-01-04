@@ -31,13 +31,18 @@ object LinkCleaner {
         val sb = StringBuffer()
 
         while (matcher.find()) {
-            val originalUrl = matcher.group()
+             val originalUrl = matcher.group()
             val cleanedUrl = cleanSingleUrl(originalUrl)
             matcher.appendReplacement(sb, Matcher.quoteReplacement(cleanedUrl))
         }
 
         matcher.appendTail(sb)
         return sb.toString()
+    }
+
+    fun containsUrl(text: String): Boolean {
+        val matcher = Patterns.WEB_URL.matcher(text)
+        return matcher.matches()
     }
 
     fun cleanSingleUrl(url: String): String {
