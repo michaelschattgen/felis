@@ -60,9 +60,6 @@ fun HomeScreen(
     val vm: HomeViewModel = viewModel();
     val stats = vm.homeStats.collectAsStateWithLifecycle().value
 
-    fun formatTimes(count: Long): String =
-        if (count == 1L) "1 time" else "$count times"
-
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.surfaceContainerLow
@@ -108,8 +105,8 @@ fun HomeScreen(
                         Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                             StatisticCard(
                                 iconRes = R.drawable.outline_bar_chart_24,
-                                title = "Urls cleaned",
-                                value = formatTimes(stats.totalCleans),
+                                title = "URLs cleaned",
+                                value = stats.totalCleans.toString(),
                                 shape = getGroupedShape(isTop = true, isBottom = true, isStart = true, isEnd = false),
                                 modifier = Modifier.weight(1f)
                             )
@@ -124,11 +121,12 @@ fun HomeScreen(
                         }
                     }
 
-                    OutlinedCard(
+                    Surface(
                         modifier = Modifier
                             .fillMaxWidth()
                             .animateContentSize(),
-                        shape = RoundedCornerShape(28.dp)
+                        shape = RoundedCornerShape(28.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh // M3 Expressive color
                     ) {
                         Column(
                             modifier = Modifier.padding(16.dp),
