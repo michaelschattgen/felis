@@ -13,14 +13,14 @@ class CleanHistoryRepository(
         return dao.observeEventsSince(from)
     }
 
-    fun observeHomeStats(nowEpochMs: Long): Flow<HomeStats> {
+    fun observeHomeStats(nowEpochMs: Long): Flow<Statistics> {
         val from = nowEpochMs - 30L * 24L * 60L * 60L * 1000L
 
         return combine(
             dao.observeTotalCleans(),
             dao.observeTotalRemovedParams(),
         ) { totalCleans, totalRemovedParams ->
-            HomeStats(
+            Statistics(
                 totalCleans = totalCleans,
                 totalRemovedParams = totalRemovedParams,
             )

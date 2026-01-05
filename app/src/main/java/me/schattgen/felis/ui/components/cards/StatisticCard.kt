@@ -1,5 +1,6 @@
 package me.schattgen.felis.ui.components.cards
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,15 +12,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Surface
+import androidx.compose.ui.res.painterResource
 
 @Composable
 fun StatisticCard(
     title: String,
     value: String,
-    icon: ImageVector,
+    @DrawableRes iconRes: Int,
     shape: Shape,
     modifier: Modifier = Modifier
 ) {
@@ -35,12 +36,14 @@ fun StatisticCard(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Icon(
-                imageVector = icon,
+                painter = painterResource(id = iconRes),
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(18.dp)
             )
-            Column {
+            Column(
+                modifier = Modifier.padding(0.dp, 4.dp, 0.dp, 0.dp)
+            ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.labelLarge,
@@ -48,7 +51,7 @@ fun StatisticCard(
                 )
                 Text(
                     text = value,
-                    style = MaterialTheme.typography.headlineMedium,
+                    style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }

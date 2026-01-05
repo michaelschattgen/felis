@@ -41,6 +41,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import me.schattgen.felis.R
 import me.schattgen.felis.ui.components.cards.StatisticCard
 import me.schattgen.felis.ui.components.helpers.ShapeHelpers.getGroupedShape
@@ -54,6 +56,12 @@ fun HomeScreen(
 ) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
+
+    val vm: HomeViewModel = viewModel();
+    val stats = vm.homeStats.collectAsStateWithLifecycle().value
+
+    fun formatTimes(count: Long): String =
+        if (count == 1L) "1 time" else "$count times"
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -99,16 +107,17 @@ fun HomeScreen(
                     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                         Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
                             StatisticCard(
-                                icon = Icons.Outlined.Info,
-                                title = "# of cleans",
-                                value = "23 times",
+                                iconRes = R.drawable.outline_bar_chart_24,
+                                title = "Urls cleaned",
+                                value = formatTimes(stats.totalCleans),
                                 shape = getGroupedShape(isTop = true, isBottom = true, isStart = true, isEnd = false),
                                 modifier = Modifier.weight(1f)
                             )
+
                             StatisticCard(
-                                icon = Icons.Outlined.Info,
-                                title = "Removed parameters",
-                                value = "412",
+                                iconRes = R.drawable.outline_cleaning_services_24,
+                                title = "Parameters removed",
+                                value = stats.totalRemovedParams.toString(),
                                 shape = getGroupedShape(isTop = true, isBottom = true, isStart = false, isEnd = true),
                                 modifier = Modifier.weight(1f)
                             )
