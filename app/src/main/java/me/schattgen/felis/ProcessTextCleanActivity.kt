@@ -4,6 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import me.schattgen.felis.data.history.CleanEventSource
 import me.schattgen.felis.utils.LinkCleaner
 
 class ProcessTextCleanActivity : ComponentActivity() {
@@ -22,10 +25,18 @@ class ProcessTextCleanActivity : ComponentActivity() {
             return
         }
 
-        val cleaned = LinkCleaner.cleanSharedText(input)
+        val cleanResult = LinkCleaner.cleanText(input)
 
-        val result = Intent().putExtra(Intent.EXTRA_PROCESS_TEXT, cleaned)
-        setResult(Activity.RESULT_OK, result)
-        finish()
+        val repo = (application as FelisApp).cleanHistoryRepository
+
+        lifecycleScope.launch {
+            if (cleanResult.records.isNotEmpty()) {
+                repo.recordCleanItems(cleanResult.records, CleanEventSource.ContextMenu)
+            }
+
+            val out = Intent().putExtra(Intent.EXTRA_PROCESS_TEXT, cleanResult.cleanedText)
+            setResult(Activity.RESULT_OK, out)
+            finish()
+        }
     }
 }

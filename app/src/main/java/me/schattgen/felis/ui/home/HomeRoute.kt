@@ -1,5 +1,6 @@
 package me.schattgen.felis.ui.home
 
+import android.app.Activity
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -11,9 +12,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
+import me.schattgen.felis.FelisApp
 import me.schattgen.felis.R
-import me.schattgen.felis.ui.home.components.AboutSheet
+import me.schattgen.felis.data.history.CleanEventSource
 import me.schattgen.felis.ui.components.dialogs.ManualInputDialog
+import me.schattgen.felis.ui.home.components.AboutSheet
 import me.schattgen.felis.utils.ClipboardUtils.readText
 import me.schattgen.felis.utils.LinkCleaner
 import me.schattgen.felis.utils.LinkCleaner.containsUrl
@@ -22,6 +25,8 @@ import me.schattgen.felis.utils.ShareUtils.shareText
 @Composable
 fun HomeRoute() {
     val context = LocalContext.current
+    val repo = (context.applicationContext as FelisApp).cleanHistoryRepository
+
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
@@ -43,10 +48,17 @@ fun HomeRoute() {
                 return@HomeScreen
             }
 
-            val cleaned = LinkCleaner.cleanSharedText(clipboardText)
-            shareText(context, cleaned)
+            val cleanResult = LinkCleaner.cleanText(clipboardText)
 
-            scope.launch { snackbarHostState.showSnackbar(snackbarCleaned) }
+            scope.launch {
+                if (cleanResult.records.isNotEmpty()) {
+                    repo.recordCleanItems(cleanResult.records, CleanEventSource.Clipboard)
+                }
+
+                shareText(context, cleanResult.cleanedText)
+                snackbarHostState.showSnackbar(snackbarCleaned)
+            }
+
 
         },
         onAboutClick = { aboutOpen = true }
@@ -59,8 +71,18 @@ fun HomeRoute() {
             onValueChange = { manualInput = it },
             onDismiss = { manualInputOpen = false },
             onConfirm = {
-                val cleaned = LinkCleaner.cleanSharedText(manualInput.trim())
-                shareText(context, cleaned)
+                val input = manualInput.trim()
+                val cleanResult = LinkCleaner.cleanText(input)
+
+                scope.launch {
+                    if (cleanResult.records.isNotEmpty()) {
+                        repo.recordCleanItems(cleanResult.records, CleanEventSource.Manual)
+                    }
+
+                    shareText(context, cleanResult.cleanedText)
+                    snackbarHostState.showSnackbar(snackbarCleaned)
+                }
+
                 manualInputOpen = false
                 scope.launch { snackbarHostState.showSnackbar(snackbarCleaned) }
             }
