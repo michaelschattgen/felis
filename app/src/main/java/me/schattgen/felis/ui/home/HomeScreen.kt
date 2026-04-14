@@ -3,6 +3,7 @@ package me.schattgen.felis.ui.home
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -36,8 +38,10 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -134,7 +138,8 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .animateContentSize(),
                         shape = RoundedCornerShape(28.dp),
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        tonalElevation = 1.dp
                     ) {
                         Column(
                             modifier = Modifier.padding(16.dp),
@@ -163,7 +168,8 @@ fun HomeScreen(
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(28.dp),
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        tonalElevation = 1.dp
                     ) {
                         Column(
                             modifier = Modifier.padding(16.dp),
@@ -201,7 +207,8 @@ fun HomeScreen(
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(28.dp),
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        tonalElevation = 1.dp
                     ) {
                         Column(
                             modifier = Modifier.padding(16.dp),
@@ -262,9 +269,27 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     TextButton(onClick = onHistoryClick) {
+                        Icon(
+                            painter = painterResource(R.drawable.outline_history_24),
+                            contentDescription = null,
+                        )
                         Text(
                             text = stringResource(R.string.home_history_button),
+                            modifier = Modifier.padding(start = 8.dp)
                         )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .padding(vertical = 8.dp)
+                            .height(24.dp)
+                            .width(1.dp)
+                            .clip(RoundedCornerShape(50))
+                    ) {
+                        Surface(
+                            color = MaterialTheme.colorScheme.outlineVariant,
+                            modifier = Modifier.fillMaxSize()
+                        ) {}
                     }
 
                     TextButton(onClick = onAboutClick) {
