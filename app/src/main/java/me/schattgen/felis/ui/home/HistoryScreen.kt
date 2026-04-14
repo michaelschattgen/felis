@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.schattgen.felis.R
+import me.schattgen.felis.data.history.CleanEventSource
 import me.schattgen.felis.data.history.CleanEventItemEntity
 import me.schattgen.felis.utils.UrlParamAnalytics
 
@@ -75,7 +76,7 @@ fun HistoryScreen(
                     .padding(innerPadding)
                     .fillMaxSize(),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 items(items = entries, key = { it.id }) { item ->
                     HistoryEntryCard(item = item, onEntryClick = onEntryClick)
@@ -98,8 +99,8 @@ private fun HistoryEntryCard(
         onClick = { onEntryClick(item.cleanedUrl) }
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(horizontal = 18.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -109,20 +110,20 @@ private fun HistoryEntryCard(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = item.cleanedDomain.ifBlank { "Unknown domain" },
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.bodyLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                     Text(
                         text = item.cleanedUrl,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = MaterialTheme.typography.labelLarge,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "${item.removedParamCount} params • ${item.source.name} • ${formatDateTime(item.createdAt)}",
-                        style = MaterialTheme.typography.bodySmall,
+                        text = "${item.removedParamCount} params • ${item.source.toUiLabel()} • ${formatDateTime(item.createdAt)}",
+                        style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -144,7 +145,7 @@ private fun HistoryEntryCard(
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
                         text = "Original",
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
@@ -157,7 +158,7 @@ private fun HistoryEntryCard(
 
                     Text(
                         text = "Removed parameters",
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.titleSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(top = 4.dp)
                     )
@@ -178,7 +179,8 @@ private fun HistoryEntryCard(
                                 Column(modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp)) {
                                     Text(
                                         text = removed.name,
-                                        style = MaterialTheme.typography.labelLarge
+                                        style = MaterialTheme.typography.labelLarge,
+                                        color = MaterialTheme.colorScheme.onSurface
                                     )
                                     Text(
                                         text = removed.value,
@@ -195,4 +197,12 @@ private fun HistoryEntryCard(
             }
         }
     }
+}
+
+private fun CleanEventSource.toUiLabel(): String = when (this) {
+    CleanEventSource.Manual -> "Manual"
+    CleanEventSource.ShareSheet -> "Share sheet"
+    CleanEventSource.ContextMenu -> "Context menu"
+    CleanEventSource.Clipboard -> "Clipboard"
+    CleanEventSource.Unknown -> "Unknown"
 }

@@ -137,17 +137,17 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .animateContentSize(),
-                        shape = RoundedCornerShape(28.dp),
+                        shape = RoundedCornerShape(32.dp),
                         color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        tonalElevation = 1.dp
+                        tonalElevation = 2.dp
                     ) {
                         Column(
-                            modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 18.dp),
+                            verticalArrangement = Arrangement.spacedBy(14.dp)
                         ) {
                             Text(
                                 text = stringResource(R.string.home_title),
-                                style = MaterialTheme.typography.titleLarge
+                                style = MaterialTheme.typography.headlineSmall
                             )
 
                             Text(
@@ -167,13 +167,13 @@ fun HomeScreen(
 
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(28.dp),
+                        shape = RoundedCornerShape(32.dp),
                         color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        tonalElevation = 1.dp
+                        tonalElevation = 2.dp
                     ) {
                         Column(
-                            modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 18.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             Text(
                                 text = stringResource(R.string.top_domains_title),
@@ -206,13 +206,13 @@ fun HomeScreen(
 
                     Surface(
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(28.dp),
+                        shape = RoundedCornerShape(32.dp),
                         color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        tonalElevation = 1.dp
+                        tonalElevation = 2.dp
                     ) {
                         Column(
-                            modifier = Modifier.padding(16.dp),
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 18.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             Text(
                                 text = stringResource(R.string.top_params_title),
@@ -234,14 +234,14 @@ fun HomeScreen(
                                     ) {
                                         Text(
                                             text = item.paramName,
-                                            style = MaterialTheme.typography.titleMedium,
+                                            style = MaterialTheme.typography.bodyLarge,
                                             maxLines = 1,
                                             overflow = TextOverflow.Ellipsis,
                                             modifier = Modifier.weight(1f)
                                         )
                                         Text(
                                             text = item.removedCount.toString(),
-                                            style = MaterialTheme.typography.titleLarge,
+                                            style = MaterialTheme.typography.headlineSmall,
                                             modifier = Modifier.padding(start = 16.dp)
                                         )
                                     }
@@ -311,20 +311,22 @@ private fun DomainUsageRow(item: DomainUsageItem) {
         .withZone(ZoneId.systemDefault())
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 2.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = item.domain,
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = "Last cleaned ${formatter.format(Instant.ofEpochMilli(item.lastUsedAt))}",
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -333,7 +335,7 @@ private fun DomainUsageRow(item: DomainUsageItem) {
 
         Text(
             text = item.cleanCount.toString(),
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(start = 16.dp)
         )
     }

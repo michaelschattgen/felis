@@ -44,8 +44,12 @@
     <string name="top_params_empty">No removed parameters yet.</string>
     <string name="top_params_show_all">Show all</string>
 
-    <string name="about_description">A tiny link cleaner for sharing without tracking clutter.</string>
-    <string name="about_tip">Tip: try pasting a YouTube or news link with a bunch of “utm_…” params.</string>
+    <string name="about_description">Felis is a privacy-first link cleaner that strips tracking parameters before you share.</string>
+    <string name="about_tip">Works from Share, text selection, or directly from the app with clipboard fallback.</string>
+    <string name="about_privacy_title">Privacy</string>
+    <string name="about_privacy_body">No accounts, no ads, no background syncing. Your links stay on your device.</string>
+    <string name="about_open_source_title">Open source</string>
+    <string name="about_open_source_body">Built as a free community project. You can inspect the code, suggest features, and contribute improvements.</string>
 
     <string name="snackbar_cleaned">Cleaned!</string>
     <string name="snackbar_copied">Copied to clipboard</string>
