@@ -32,4 +32,27 @@ interface CleanEventItemDao {
 
     @Query("SELECT COALESCE(SUM(removedParamCount), 0) FROM clean_event_items WHERE createdAt >= :fromEpochMs")
     fun observeRemovedParamsSince(fromEpochMs: Long): Flow<Long>
+
+    @Query(
+        """
+        SELECT cleanedDomain AS domain, COUNT(*) AS cleanCount, MAX(createdAt) AS lastUsedAt
+        FROM clean_event_items
+        WHERE cleanedDomain != ''
+        GROUP BY cleanedDomain
+        ORDER BY cleanCount DESC, lastUsedAt DESC
+        LIMIT :limit
+        """
+    )
+    fun observeTopDomains(limit: Int): Flow<List<DomainUsageItem>>
+
+    @Query(
+        """
+        SELECT cleanedDomain AS domain, COUNT(*) AS cleanCount, MAX(createdAt) AS lastUsedAt
+        FROM clean_event_items
+        WHERE cleanedDomain != ''
+        GROUP BY cleanedDomain
+        ORDER BY cleanCount DESC, lastUsedAt DESC
+        """
+    )
+    fun observeAllDomains(): Flow<List<DomainUsageItem>>
 }

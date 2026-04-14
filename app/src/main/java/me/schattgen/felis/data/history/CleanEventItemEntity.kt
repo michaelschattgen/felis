@@ -18,6 +18,8 @@ data class CleanEventItemEntity(
     val originalUrl: String,
     val cleanedUrl: String,
 
+    val cleanedDomain: String,
+
     val removedParamCount: Int,
 
     val createdAt: Long,

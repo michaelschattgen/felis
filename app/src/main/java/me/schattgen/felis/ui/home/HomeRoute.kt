@@ -3,29 +3,40 @@ package me.schattgen.felis.ui.home
 import android.app.Activity
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
-import me.schattgen.felis.FelisApp
 import me.schattgen.felis.R
 import me.schattgen.felis.data.history.CleanEventSource
-import me.schattgen.felis.ui.components.dialogs.ManualInputDialog
 import me.schattgen.felis.ui.home.components.AboutSheet
+import me.schattgen.felis.ui.components.dialogs.ManualInputDialog
 import me.schattgen.felis.utils.ClipboardUtils.readText
 import me.schattgen.felis.utils.LinkCleaner
 import me.schattgen.felis.utils.LinkCleaner.containsUrl
 import me.schattgen.felis.utils.ShareUtils.shareText
 
+private enum class HomeDestination {
+    Main,
+    Domains,
+    History,
+}
+
 @Composable
 fun HomeRoute() {
     val context = LocalContext.current
-    val repo = (context.applicationContext as FelisApp).cleanHistoryRepository
+    val vm: HomeViewModel = viewModel()
+    val stats by vm.homeStats.collectAsStateWithLifecycle()
+    val topDomains by vm.topDomains.collectAsStateWithLifecycle()
+    val allDomains by vm.allDomains.collectAsStateWithLifecycle()
+    val historyEntries by vm.historyEvents.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -33,36 +44,57 @@ fun HomeRoute() {
     var aboutOpen by remember { mutableStateOf(false) }
     var manualInputOpen by rememberSaveable { mutableStateOf(false) }
     var manualInput by rememberSaveable { mutableStateOf("") }
+    var destination by rememberSaveable { mutableStateOf(HomeDestination.Main) }
 
     val snackbarCleaned = stringResource(R.string.snackbar_cleaned)
 
-    HomeScreen(
-        snackbarHostState = snackbarHostState,
-        onCleanClick = {
-            val clipboardText = readText(context)
+    when (destination) {
+        HomeDestination.Main -> {
+            HomeScreen(
+                snackbarHostState = snackbarHostState,
+                stats = stats,
+                topDomains = topDomains,
+                onCleanClick = {
+                    val clipboardText = readText(context)
 
-            val containsUrl = clipboardText?.let { containsUrl(it) }
-            if (containsUrl == false || clipboardText == null) {
-                manualInput = ""
-                manualInputOpen = true
-                return@HomeScreen
-            }
+                    val containsUrl = clipboardText?.let { containsUrl(it) }
+                    if (containsUrl == false || clipboardText == null) {
+                        manualInput = ""
+                        manualInputOpen = true
+                        return@HomeScreen
+                    }
 
-            val cleanResult = LinkCleaner.cleanText(clipboardText)
+                    val cleanResult = LinkCleaner.cleanText(clipboardText)
 
-            scope.launch {
-                if (cleanResult.records.isNotEmpty()) {
-                    repo.recordCleanItems(cleanResult.records, CleanEventSource.Clipboard)
-                }
+                    scope.launch {
+                        if (cleanResult.records.isNotEmpty()) {
+                            vm.recordCleanItems(cleanResult.records, CleanEventSource.Clipboard)
+                        }
 
-                shareText(context, cleanResult.cleanedText)
-                snackbarHostState.showSnackbar(snackbarCleaned)
-            }
+                        shareText(context, cleanResult.cleanedText)
+                        snackbarHostState.showSnackbar(snackbarCleaned)
+                    }
+                },
+                onAboutClick = { aboutOpen = true },
+                onHistoryClick = { destination = HomeDestination.History },
+                onShowAllDomainsClick = { destination = HomeDestination.Domains },
+            )
+        }
 
+        HomeDestination.Domains -> {
+            DomainsScreen(
+                domains = allDomains,
+                onBackClick = { destination = HomeDestination.Main },
+            )
+        }
 
-        },
-        onAboutClick = { aboutOpen = true }
-    )
+        HomeDestination.History -> {
+            HistoryScreen(
+                entries = historyEntries,
+                onBackClick = { destination = HomeDestination.Main },
+            )
+        }
+    }
 
     if (manualInputOpen) {
         ManualInputDialog(
@@ -76,7 +108,7 @@ fun HomeRoute() {
 
                 scope.launch {
                     if (cleanResult.records.isNotEmpty()) {
-                        repo.recordCleanItems(cleanResult.records, CleanEventSource.Manual)
+                        vm.recordCleanItems(cleanResult.records, CleanEventSource.Manual)
                     }
 
                     shareText(context, cleanResult.cleanedText)
@@ -84,7 +116,6 @@ fun HomeRoute() {
                 }
 
                 manualInputOpen = false
-                scope.launch { snackbarHostState.showSnackbar(snackbarCleaned) }
             }
         )
     }

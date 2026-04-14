@@ -2,6 +2,7 @@ package me.schattgen.felis.data.history
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import me.schattgen.felis.utils.DomainUtils
 
 class CleanHistoryRepository(
     private val dao: CleanEventItemDao
@@ -14,8 +15,6 @@ class CleanHistoryRepository(
     }
 
     fun observeHomeStats(nowEpochMs: Long): Flow<Statistics> {
-        val from = nowEpochMs - 30L * 24L * 60L * 60L * 1000L
-
         return combine(
             dao.observeTotalCleans(),
             dao.observeTotalRemovedParams(),
@@ -26,6 +25,10 @@ class CleanHistoryRepository(
             )
         }
     }
+
+    fun observeTopDomains(limit: Int): Flow<List<DomainUsageItem>> = dao.observeTopDomains(limit)
+
+    fun observeAllDomains(): Flow<List<DomainUsageItem>> = dao.observeAllDomains()
 
     suspend fun recordCleanItem(
         originalUrl: String,
@@ -38,6 +41,7 @@ class CleanHistoryRepository(
             CleanEventItemEntity(
                 originalUrl = originalUrl,
                 cleanedUrl = cleanedUrl,
+                cleanedDomain = DomainUtils.domainFromUrl(cleanedUrl),
                 removedParamCount = removedParamCount,
                 createdAt = createdAt,
                 source = origin,
@@ -55,6 +59,7 @@ class CleanHistoryRepository(
                 CleanEventItemEntity(
                     originalUrl = it.originalUrl,
                     cleanedUrl = it.cleanedUrl,
+                    cleanedDomain = DomainUtils.domainFromUrl(it.cleanedUrl),
                     removedParamCount = it.removedParamCount,
                     createdAt = createdAt,
                     source = origin,

@@ -9,7 +9,7 @@ import me.schattgen.felis.data.history.RoomConverters
 
 @Database(
     entities = [CleanEventItemEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(RoomConverters::class)

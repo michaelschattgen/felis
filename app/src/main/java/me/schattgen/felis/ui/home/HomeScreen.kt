@@ -21,9 +21,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -41,24 +41,29 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import me.schattgen.felis.R
+import me.schattgen.felis.data.history.DomainUsageItem
+import me.schattgen.felis.data.history.Statistics
 import me.schattgen.felis.ui.components.cards.StatisticCard
 import me.schattgen.felis.ui.components.helpers.ShapeHelpers.getGroupedShape
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     snackbarHostState: SnackbarHostState,
+    stats: Statistics,
+    topDomains: List<DomainUsageItem>,
     onCleanClick: () -> Unit,
-    onAboutClick: () -> Unit
+    onAboutClick: () -> Unit,
+    onHistoryClick: () -> Unit,
+    onShowAllDomainsClick: () -> Unit,
 ) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
-
-    val vm: HomeViewModel = viewModel();
-    val stats = vm.homeStats.collectAsStateWithLifecycle().value
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -101,24 +106,22 @@ fun HomeScreen(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
-                            StatisticCard(
-                                iconRes = R.drawable.outline_bar_chart_24,
-                                title = "URLs cleaned",
-                                value = stats.totalCleans.toString(),
-                                shape = getGroupedShape(isTop = true, isBottom = true, isStart = true, isEnd = false),
-                                modifier = Modifier.weight(1f)
-                            )
+                    Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
+                        StatisticCard(
+                            iconRes = R.drawable.outline_bar_chart_24,
+                            title = "URLs cleaned",
+                            value = stats.totalCleans.toString(),
+                            shape = getGroupedShape(isTop = true, isBottom = true, isStart = true, isEnd = false),
+                            modifier = Modifier.weight(1f)
+                        )
 
-                            StatisticCard(
-                                iconRes = R.drawable.outline_cleaning_services_24,
-                                title = "Parameters removed",
-                                value = stats.totalRemovedParams.toString(),
-                                shape = getGroupedShape(isTop = true, isBottom = true, isStart = false, isEnd = true),
-                                modifier = Modifier.weight(1f)
-                            )
-                        }
+                        StatisticCard(
+                            iconRes = R.drawable.outline_cleaning_services_24,
+                            title = "Parameters removed",
+                            value = stats.totalRemovedParams.toString(),
+                            shape = getGroupedShape(isTop = true, isBottom = true, isStart = false, isEnd = true),
+                            modifier = Modifier.weight(1f)
+                        )
                     }
 
                     Surface(
@@ -126,7 +129,7 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .animateContentSize(),
                         shape = RoundedCornerShape(28.dp),
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh // M3 Expressive color
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh
                     ) {
                         Column(
                             modifier = Modifier.padding(16.dp),
@@ -151,21 +154,101 @@ fun HomeScreen(
                             }
                         }
                     }
+
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(28.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.top_domains_title),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+
+                            if (topDomains.isEmpty()) {
+                                Text(
+                                    text = stringResource(R.string.top_domains_empty),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            } else {
+                                topDomains.forEachIndexed { index, item ->
+                                    DomainUsageRow(item = item)
+                                    if (index < topDomains.lastIndex) {
+                                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                                    }
+                                }
+
+                                TextButton(
+                                    onClick = onShowAllDomainsClick,
+                                    modifier = Modifier.align(Alignment.End)
+                                ) {
+                                    Text(stringResource(R.string.top_domains_show_all))
+                                }
+                            }
+                        }
+                    }
                 }
 
                 Spacer(Modifier.height(12.dp))
 
-                TextButton(
-                    onClick = onAboutClick,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                Row(
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(Icons.Outlined.Info, contentDescription = null)
-                    Text(
-                        text = stringResource(R.string.home_about_button),
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
+                    TextButton(onClick = onHistoryClick) {
+                        Text(
+                            text = stringResource(R.string.home_history_button),
+                        )
+                    }
+
+                    TextButton(onClick = onAboutClick) {
+                        Icon(Icons.Outlined.Info, contentDescription = null)
+                        Text(
+                            text = stringResource(R.string.home_about_button),
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun DomainUsageRow(item: DomainUsageItem) {
+    val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)
+        .withZone(ZoneId.systemDefault())
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = item.domain,
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = "Last cleaned ${formatter.format(Instant.ofEpochMilli(item.lastUsedAt))}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        Text(
+            text = item.cleanCount.toString(),
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(start = 16.dp)
+        )
     }
 }
