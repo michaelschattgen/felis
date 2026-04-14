@@ -6,13 +6,16 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import me.schattgen.felis.FelisApp
 import me.schattgen.felis.data.history.CleanEventSource
 import me.schattgen.felis.data.history.CleanEventItemEntity
 import me.schattgen.felis.data.history.CleanRecord
 import me.schattgen.felis.data.history.DomainUsageItem
+import me.schattgen.felis.data.history.RemovedParamUsageItem
 import me.schattgen.felis.data.history.Statistics
+import me.schattgen.felis.utils.UrlParamAnalytics
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -47,6 +50,24 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     val historyEvents: StateFlow<List<CleanEventItemEntity>> =
         repo.observeAllEvents()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList(),
+            )
+
+    val topRemovedParams: StateFlow<List<RemovedParamUsageItem>> =
+        historyEvents
+            .map { UrlParamAnalytics.removedParamCounts(it, limit = 3) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList(),
+            )
+
+    val allRemovedParams: StateFlow<List<RemovedParamUsageItem>> =
+        historyEvents
+            .map { UrlParamAnalytics.removedParamCounts(it) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(5_000),

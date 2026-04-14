@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import me.schattgen.felis.R
 import me.schattgen.felis.data.history.CleanEventSource
 import me.schattgen.felis.ui.home.components.AboutSheet
+import me.schattgen.felis.utils.ClipboardUtils.copyText
 import me.schattgen.felis.ui.components.dialogs.ManualInputDialog
 import me.schattgen.felis.utils.ClipboardUtils.readText
 import me.schattgen.felis.utils.LinkCleaner
@@ -26,6 +27,7 @@ import me.schattgen.felis.utils.ShareUtils.shareText
 private enum class HomeDestination {
     Main,
     Domains,
+    Params,
     History,
 }
 
@@ -35,7 +37,9 @@ fun HomeRoute() {
     val vm: HomeViewModel = viewModel()
     val stats by vm.homeStats.collectAsStateWithLifecycle()
     val topDomains by vm.topDomains.collectAsStateWithLifecycle()
+    val topRemovedParams by vm.topRemovedParams.collectAsStateWithLifecycle()
     val allDomains by vm.allDomains.collectAsStateWithLifecycle()
+    val allRemovedParams by vm.allRemovedParams.collectAsStateWithLifecycle()
     val historyEntries by vm.historyEvents.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -54,6 +58,7 @@ fun HomeRoute() {
                 snackbarHostState = snackbarHostState,
                 stats = stats,
                 topDomains = topDomains,
+                topRemovedParams = topRemovedParams,
                 onCleanClick = {
                     val clipboardText = readText(context)
 
@@ -75,9 +80,11 @@ fun HomeRoute() {
                         snackbarHostState.showSnackbar(snackbarCleaned)
                     }
                 },
+                onParamsStatClick = { destination = HomeDestination.Params },
                 onAboutClick = { aboutOpen = true },
                 onHistoryClick = { destination = HomeDestination.History },
                 onShowAllDomainsClick = { destination = HomeDestination.Domains },
+                onShowAllParamsClick = { destination = HomeDestination.Params },
             )
         }
 
@@ -91,6 +98,21 @@ fun HomeRoute() {
         HomeDestination.History -> {
             HistoryScreen(
                 entries = historyEntries,
+                onEntryClick = { cleanedUrl ->
+                    copyText(
+                        context = context,
+                        text = cleanedUrl,
+                        label = context.getString(R.string.clipboard_label),
+                    )
+                    scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.snackbar_copied)) }
+                },
+                onBackClick = { destination = HomeDestination.Main },
+            )
+        }
+
+        HomeDestination.Params -> {
+            RemovedParamsScreen(
+                items = allRemovedParams,
                 onBackClick = { destination = HomeDestination.Main },
             )
         }

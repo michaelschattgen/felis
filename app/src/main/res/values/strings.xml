@@ -40,6 +40,9 @@
     <string name="top_domains_title">Most cleaned domains</string>
     <string name="top_domains_show_all">Show all</string>
     <string name="top_domains_empty">No cleaned domains yet. Clean a few links and this list will show up.</string>
+    <string name="top_params_title">Most removed parameters</string>
+    <string name="top_params_empty">No removed parameters yet.</string>
+    <string name="top_params_show_all">Show all</string>
 
     <string name="about_description">A tiny link cleaner for sharing without tracking clutter.</string>
     <string name="about_tip">Tip: try pasting a YouTube or news link with a bunch of “utm_…” params.</string>

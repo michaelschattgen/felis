@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.schattgen.felis.R
 import me.schattgen.felis.data.history.DomainUsageItem
+import me.schattgen.felis.data.history.RemovedParamUsageItem
 import me.schattgen.felis.data.history.Statistics
 import me.schattgen.felis.ui.components.cards.StatisticCard
 import me.schattgen.felis.ui.components.helpers.ShapeHelpers.getGroupedShape
@@ -57,10 +58,13 @@ fun HomeScreen(
     snackbarHostState: SnackbarHostState,
     stats: Statistics,
     topDomains: List<DomainUsageItem>,
+    topRemovedParams: List<RemovedParamUsageItem>,
     onCleanClick: () -> Unit,
+    onParamsStatClick: () -> Unit,
     onAboutClick: () -> Unit,
     onHistoryClick: () -> Unit,
     onShowAllDomainsClick: () -> Unit,
+    onShowAllParamsClick: () -> Unit,
 ) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topAppBarState)
@@ -120,6 +124,7 @@ fun HomeScreen(
                             title = "Parameters removed",
                             value = stats.totalRemovedParams.toString(),
                             shape = getGroupedShape(isTop = true, isBottom = true, isStart = false, isEnd = true),
+                            onClick = onParamsStatClick,
                             modifier = Modifier.weight(1f)
                         )
                     }
@@ -188,6 +193,62 @@ fun HomeScreen(
                                     modifier = Modifier.align(Alignment.End)
                                 ) {
                                     Text(stringResource(R.string.top_domains_show_all))
+                                }
+                            }
+                        }
+                    }
+
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(28.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.top_params_title),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+
+                            if (topRemovedParams.isEmpty()) {
+                                Text(
+                                    text = stringResource(R.string.top_params_empty),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            } else {
+                                topRemovedParams.forEachIndexed { index, item ->
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = item.paramName,
+                                            style = MaterialTheme.typography.titleMedium,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                        Text(
+                                            text = item.removedCount.toString(),
+                                            style = MaterialTheme.typography.titleLarge,
+                                            modifier = Modifier.padding(start = 16.dp)
+                                        )
+                                    }
+
+                                    if (index < topRemovedParams.lastIndex) {
+                                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+                                    }
+                                }
+
+                                TextButton(
+                                    onClick = onShowAllParamsClick,
+                                    modifier = Modifier.align(Alignment.End)
+                                ) {
+                                    Text(stringResource(R.string.top_params_show_all))
                                 }
                             }
                         }
