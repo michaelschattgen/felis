@@ -3,10 +3,11 @@ package me.schattgen.felis.utils
 import android.net.Uri
 import android.util.Patterns
 import java.util.Locale
-import java.util.regex.Matcher
 import me.schattgen.felis.data.history.CleanRecord
 
 object LinkCleaner {
+    private val textUrlRegex = Regex("https?://\\S+", RegexOption.IGNORE_CASE)
+    private val trailingPunctuation = ".,!?:;)]}"
 
     private val genericTrackingParams = setOf(
         "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content",
@@ -38,25 +39,24 @@ object LinkCleaner {
     }
 
     fun cleanText(text: String): CleanTextResult {
-        val matcher = Patterns.WEB_URL.matcher(text)
-        val sb = StringBuffer()
         val records = ArrayList<CleanRecord>(4)
 
-        while (matcher.find()) {
-            val originalUrl = matcher.group() ?: continue
-            val result = cleanUrl(originalUrl)
+        val cleanedText = textUrlRegex.replace(text) { matchResult ->
+            val rawMatch = matchResult.value
+            val splitIndex = rawMatch.indexOfLast { it !in trailingPunctuation } + 1
+            val originalUrl = rawMatch.substring(0, splitIndex)
+            val trailing = rawMatch.substring(splitIndex)
 
+            val result = cleanUrl(originalUrl)
             if (result.cleanedUrl != result.originalUrl) {
                 records.add(result.toRecord())
             }
 
-            matcher.appendReplacement(sb, Matcher.quoteReplacement(result.cleanedUrl))
+            result.cleanedUrl + trailing
         }
 
-        matcher.appendTail(sb)
-
         return CleanTextResult(
-            cleanedText = sb.toString(),
+            cleanedText = cleanedText,
             records = records
         )
     }
