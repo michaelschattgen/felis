@@ -1,6 +1,7 @@
 package me.schattgen.felis.ui.home
 
 import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -49,6 +50,10 @@ fun HomeRoute() {
     var manualInputOpen by rememberSaveable { mutableStateOf(false) }
     var manualInput by rememberSaveable { mutableStateOf("") }
     var destination by rememberSaveable { mutableStateOf(HomeDestination.Main) }
+
+    BackHandler(enabled = destination != HomeDestination.Main) {
+        destination = HomeDestination.Main
+    }
 
     val snackbarCleaned = stringResource(R.string.snackbar_cleaned)
 
