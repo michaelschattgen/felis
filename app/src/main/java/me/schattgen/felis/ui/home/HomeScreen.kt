@@ -271,7 +271,7 @@ fun HomeScreen(
                     TextButton(onClick = onHistoryClick) {
                         Icon(
                             painter = painterResource(R.drawable.outline_history_24),
-                            contentDescription = null,
+                            contentDescription = stringResource(R.string.home_history_icon_desc),
                         )
                         Text(
                             text = stringResource(R.string.home_history_button),
@@ -293,7 +293,10 @@ fun HomeScreen(
                     }
 
                     TextButton(onClick = onAboutClick) {
-                        Icon(Icons.Outlined.Info, contentDescription = null)
+                        Icon(
+                            Icons.Outlined.Info,
+                            contentDescription = stringResource(R.string.home_about_icon_desc)
+                        )
                         Text(
                             text = stringResource(R.string.home_about_button),
                             modifier = Modifier.padding(start = 8.dp)

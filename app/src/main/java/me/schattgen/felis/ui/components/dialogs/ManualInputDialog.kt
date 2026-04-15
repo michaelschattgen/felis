@@ -8,6 +8,7 @@ import androidx.compose.ui.window.DialogProperties
 fun ManualInputDialog(
     open: Boolean,
     value: String,
+    errorResId: Int?,
     onValueChange: (String) -> Unit,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
@@ -20,6 +21,7 @@ fun ManualInputDialog(
     ) {
         ManualInputDialogCard(
             value = value,
+            errorResId = errorResId,
             onValueChange = onValueChange,
             onDismiss = onDismiss,
             onConfirm = onConfirm

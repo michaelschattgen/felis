@@ -29,6 +29,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.schattgen.felis.R
@@ -46,10 +47,13 @@ fun HistoryScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("History") },
+                title = { Text(stringResource(R.string.screen_history_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+                        Icon(
+                            Icons.AutoMirrored.Outlined.ArrowBack,
+                            contentDescription = stringResource(R.string.common_back)
+                        )
                     }
                 }
             )
@@ -65,7 +69,7 @@ fun HistoryScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "No history yet",
+                    text = stringResource(R.string.screen_history_empty),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -133,7 +137,9 @@ private fun HistoryEntryCard(
                         painter = painterResource(
                             id = if (expanded) R.drawable.outline_expand_less_24 else R.drawable.outline_expand_more_24
                         ),
-                        contentDescription = null,
+                        contentDescription = stringResource(
+                            if (expanded) R.string.history_collapse_details else R.string.history_expand_details
+                        ),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }

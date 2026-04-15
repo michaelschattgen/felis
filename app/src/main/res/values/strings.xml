@@ -36,13 +36,27 @@
     <string name="home_copy_button">Copy</string>
     <string name="home_about_button">About</string>
     <string name="home_history_button">History</string>
+    <string name="home_no_changes_found">No tracking parameters found to remove.</string>
+    <string name="home_no_url_found">No URL found. Paste or type a link to clean.</string>
+    <string name="home_history_icon_desc">Open history</string>
+    <string name="home_about_icon_desc">Open about</string>
 
     <string name="top_domains_title">Most cleaned domains</string>
     <string name="top_domains_show_all">Show all</string>
-    <string name="top_domains_empty">No cleaned domains yet. Clean a few links and this list will show up.</string>
+    <string name="top_domains_empty">No cleaned domains yet. Clean a link to start building your domain stats.</string>
     <string name="top_params_title">Most removed parameters</string>
-    <string name="top_params_empty">No removed parameters yet.</string>
+    <string name="top_params_empty">No removed parameters yet. Once tracking params are removed, they will appear here.</string>
     <string name="top_params_show_all">Show all</string>
+
+    <string name="screen_history_title">History</string>
+    <string name="screen_history_empty">No history yet. Clean a link and your recent activity will appear here.</string>
+    <string name="screen_domains_title">Domains</string>
+    <string name="screen_domains_empty">No cleaned domains yet. Clean links to populate this list.</string>
+    <string name="screen_removed_params_title">Removed parameters</string>
+    <string name="screen_removed_params_empty">No removed parameters yet. Tracking parameters removed from links will show up here.</string>
+    <string name="common_back">Go back</string>
+    <string name="history_expand_details">Show entry details</string>
+    <string name="history_collapse_details">Hide entry details</string>
 
     <string name="about_description">Felis is a privacy-first link cleaner that strips tracking parameters before you share.</string>
     <string name="about_tip">Works from Share, text selection, or directly from the app with clipboard fallback.</string>
@@ -61,6 +75,8 @@
     </string>
     <string name="dialog_manual_input_label">Enter link or text</string>
     <string name="dialog_manual_input_confirm">Clean &amp; Share</string>
+    <string name="dialog_manual_input_error_empty">Please enter a link or text before cleaning.</string>
+    <string name="dialog_manual_input_error_no_url">No URL detected in this text. Please include at least one link.</string>
 
     <string name="common_cancel">Cancel</string>
 </resources>

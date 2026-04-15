@@ -23,6 +23,7 @@ import me.schattgen.felis.R
 @Composable
 fun ManualInputDialogCard(
     value: String,
+    errorResId: Int?,
     onValueChange: (String) -> Unit,
     onDismiss: () -> Unit,
     onConfirm: () -> Unit
@@ -55,6 +56,12 @@ fun ManualInputDialogCard(
                 onValueChange = onValueChange,
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(stringResource(R.string.dialog_manual_input_label)) },
+                isError = errorResId != null,
+                supportingText = {
+                    if (errorResId != null) {
+                        Text(text = stringResource(errorResId))
+                    }
+                },
                 singleLine = false,
                 minLines = 2
             )

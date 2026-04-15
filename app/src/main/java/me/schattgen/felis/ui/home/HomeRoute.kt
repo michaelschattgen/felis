@@ -49,6 +49,7 @@ fun HomeRoute() {
     var aboutOpen by remember { mutableStateOf(false) }
     var manualInputOpen by rememberSaveable { mutableStateOf(false) }
     var manualInput by rememberSaveable { mutableStateOf("") }
+    var manualInputErrorResId by rememberSaveable { mutableStateOf<Int?>(null) }
     var destination by rememberSaveable { mutableStateOf(HomeDestination.Main) }
 
     BackHandler(enabled = destination != HomeDestination.Main) {
@@ -70,6 +71,7 @@ fun HomeRoute() {
                     val containsUrl = clipboardText?.let { containsUrl(it) }
                     if (containsUrl == false || clipboardText == null) {
                         manualInput = ""
+                        manualInputErrorResId = null
                         manualInputOpen = true
                         return@HomeScreen
                     }
@@ -79,10 +81,11 @@ fun HomeRoute() {
                     scope.launch {
                         if (cleanResult.records.isNotEmpty()) {
                             vm.recordCleanItems(cleanResult.records, CleanEventSource.Clipboard)
+                            shareText(context, cleanResult.cleanedText)
+                            snackbarHostState.showSnackbar(snackbarCleaned)
+                        } else {
+                            snackbarHostState.showSnackbar(context.getString(R.string.home_no_changes_found))
                         }
-
-                        shareText(context, cleanResult.cleanedText)
-                        snackbarHostState.showSnackbar(snackbarCleaned)
                     }
                 },
                 onParamsStatClick = { destination = HomeDestination.Params },
@@ -127,21 +130,40 @@ fun HomeRoute() {
         ManualInputDialog(
             open = manualInputOpen,
             value = manualInput,
-            onValueChange = { manualInput = it },
-            onDismiss = { manualInputOpen = false },
+            onValueChange = {
+                manualInput = it
+                manualInputErrorResId = null
+            },
+            errorResId = manualInputErrorResId,
+            onDismiss = {
+                manualInputErrorResId = null
+                manualInputOpen = false
+            },
             onConfirm = {
                 val input = manualInput.trim()
+                if (input.isBlank()) {
+                    manualInputErrorResId = R.string.dialog_manual_input_error_empty
+                    return@ManualInputDialog
+                }
+
+                if (!containsUrl(input)) {
+                    manualInputErrorResId = R.string.dialog_manual_input_error_no_url
+                    return@ManualInputDialog
+                }
+
                 val cleanResult = LinkCleaner.cleanText(input)
 
                 scope.launch {
                     if (cleanResult.records.isNotEmpty()) {
                         vm.recordCleanItems(cleanResult.records, CleanEventSource.Manual)
+                        shareText(context, cleanResult.cleanedText)
+                        snackbarHostState.showSnackbar(snackbarCleaned)
+                    } else {
+                        snackbarHostState.showSnackbar(context.getString(R.string.home_no_changes_found))
                     }
-
-                    shareText(context, cleanResult.cleanedText)
-                    snackbarHostState.showSnackbar(snackbarCleaned)
                 }
 
+                manualInputErrorResId = null
                 manualInputOpen = false
             }
         )

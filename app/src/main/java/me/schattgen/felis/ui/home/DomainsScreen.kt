@@ -22,8 +22,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import me.schattgen.felis.R
 import me.schattgen.felis.data.history.DomainUsageItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,10 +37,13 @@ fun DomainsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Domains") },
+                title = { Text(stringResource(R.string.screen_domains_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
+                        Icon(
+                            Icons.AutoMirrored.Outlined.ArrowBack,
+                            contentDescription = stringResource(R.string.common_back)
+                        )
                     }
                 }
             )
@@ -54,7 +59,7 @@ fun DomainsScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "No cleaned domains yet",
+                    text = stringResource(R.string.screen_domains_empty),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
