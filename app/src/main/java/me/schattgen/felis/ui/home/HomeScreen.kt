@@ -1,6 +1,7 @@
 package me.schattgen.felis.ui.home
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.background
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -40,9 +43,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.schattgen.felis.R
@@ -77,6 +82,12 @@ fun HomeScreen(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.surfaceContainerLow
     ) {
+        val backgroundBrush = Brush.verticalGradient(
+            colors = listOf(
+                MaterialTheme.colorScheme.surfaceContainer,
+                MaterialTheme.colorScheme.surfaceContainerLow,
+            )
+        )
         Scaffold(
             contentWindowInsets = WindowInsets.safeDrawing.only(
                 WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
@@ -102,6 +113,7 @@ fun HomeScreen(
         ) { inner ->
             Column(
                 modifier = Modifier
+                    .background(backgroundBrush)
                     .padding(inner)
                     .fillMaxSize()
                     .padding(horizontal = 16.dp, vertical = 16.dp)
@@ -138,11 +150,20 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .animateContentSize(),
                         shape = RoundedCornerShape(32.dp),
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        color = Color.Transparent,
                         tonalElevation = 2.dp
                     ) {
+                        val cleanCardBrush = Brush.linearGradient(
+                            colors = listOf(
+                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.62f),
+                                MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.36f),
+                                MaterialTheme.colorScheme.surfaceContainerHigh,
+                            )
+                        )
                         Column(
-                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 18.dp),
+                            modifier = Modifier
+                                .background(cleanCardBrush)
+                                .padding(horizontal = 20.dp, vertical = 18.dp),
                             verticalArrangement = Arrangement.spacedBy(14.dp)
                         ) {
                             Text(
@@ -158,7 +179,11 @@ fun HomeScreen(
 
                             Button(
                                 onClick = onCleanClick,
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.primary,
+                                    contentColor = MaterialTheme.colorScheme.onPrimary,
+                                )
                             ) {
                                 Text(stringResource(R.string.home_clean_button))
                             }
@@ -264,11 +289,11 @@ fun HomeScreen(
 
                 Spacer(Modifier.height(12.dp))
 
-                Row(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    TextButton(onClick = onHistoryClick) {
+                    Row(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                    FilledTonalButton(onClick = onHistoryClick) {
                         Icon(
                             painter = painterResource(R.drawable.outline_history_24),
                             contentDescription = stringResource(R.string.home_history_icon_desc),
@@ -292,7 +317,7 @@ fun HomeScreen(
                         ) {}
                     }
 
-                    TextButton(onClick = onAboutClick) {
+                    FilledTonalButton(onClick = onAboutClick) {
                         Icon(
                             Icons.Outlined.Info,
                             contentDescription = stringResource(R.string.home_about_icon_desc)
@@ -338,8 +363,14 @@ private fun DomainUsageRow(item: DomainUsageItem) {
 
         Text(
             text = item.cleanCount.toString(),
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(start = 16.dp)
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .clip(RoundedCornerShape(999.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .padding(horizontal = 12.dp, vertical = 6.dp)
         )
     }
 }

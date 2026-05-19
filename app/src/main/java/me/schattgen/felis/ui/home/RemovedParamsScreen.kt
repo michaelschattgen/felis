@@ -1,5 +1,6 @@
 package me.schattgen.felis.ui.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -24,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import me.schattgen.felis.R
 import me.schattgen.felis.data.history.RemovedParamUsageItem
@@ -94,8 +97,16 @@ fun RemovedParamsScreen(
                             )
                             Text(
                                 text = item.removedCount.toString(),
-                                style = MaterialTheme.typography.headlineSmall,
-                                modifier = Modifier.padding(start = 16.dp)
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier
+                                    .padding(start = 16.dp)
+                                    .background(
+                                        color = MaterialTheme.colorScheme.primaryContainer,
+                                        shape = RoundedCornerShape(999.dp)
+                                    )
+                                    .padding(horizontal = 12.dp, vertical = 6.dp)
                             )
                         }
                     }

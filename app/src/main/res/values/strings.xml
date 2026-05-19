@@ -64,6 +64,10 @@
     <string name="about_privacy_body">No accounts, no ads, no background syncing. Your links stay on your device.</string>
     <string name="about_open_source_title">Open source</string>
     <string name="about_open_source_body">Built as a free community project. You can inspect the code, suggest features, and contribute improvements.</string>
+    <string name="about_author_title">Author</string>
+    <string name="about_author_body">Built and maintained by Michael Schattgen 🇳🇱</string>
+    <string name="about_github_cta">View on GitHub</string>
+    <string name="about_github_url">https://github.com/michaelschattgen/felis</string>
 
     <string name="snackbar_cleaned">Cleaned!</string>
     <string name="snackbar_copied">Copied to clipboard</string>
