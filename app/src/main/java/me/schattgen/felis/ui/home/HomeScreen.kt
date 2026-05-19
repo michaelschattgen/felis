@@ -2,6 +2,7 @@ package me.schattgen.felis.ui.home
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -153,6 +154,7 @@ fun HomeScreen(
                         color = Color.Transparent,
                         tonalElevation = 2.dp
                     ) {
+                        val cleanCardShape = RoundedCornerShape(32.dp)
                         val cleanCardBrush = Brush.linearGradient(
                             colors = listOf(
                                 MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.62f),
@@ -162,6 +164,11 @@ fun HomeScreen(
                         )
                         Column(
                             modifier = Modifier
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+                                    shape = cleanCardShape,
+                                )
                                 .background(cleanCardBrush)
                                 .padding(horizontal = 20.dp, vertical = 18.dp),
                             verticalArrangement = Arrangement.spacedBy(14.dp)
