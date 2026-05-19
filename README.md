@@ -10,6 +10,21 @@ It removes tracking parameters from links before you copy, share, or paste them.
 - Keep useful link analytics locally on-device
 - Stay lightweight: no account, no cloud sync, no ads
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/home.png" width="260" alt="Felis home screen" /></td>
+    <td align="center"><img src="docs/screenshots/clean.png" width="260" alt="Felis history screen" /></td>
+    <td align="center"><img src="docs/screenshots/about.png" width="260" alt="Felis history screen" /></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/domains.png" width="260" alt="Felis domains screen" /></td>
+    <td align="center"><img src="docs/screenshots/history.png" width="260" alt="Felis removed parameters screen" /></td>
+    <td align="center"><img src="docs/screenshots/integration.png" width="260" alt="Felis removed parameters screen" /></td>
+  </tr>
+</table>
+
 ## Features
 
 - **Link cleaning engine**
