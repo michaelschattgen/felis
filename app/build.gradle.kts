@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
+    implementation("androidx.navigation:navigation-compose:2.9.6")
     implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
     testImplementation("org.robolectric:robolectric:4.14.1")

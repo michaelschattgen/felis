@@ -1,7 +1,14 @@
 package me.schattgen.felis.ui.home
 
-import android.app.Activity
-import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,11 +32,11 @@ import me.schattgen.felis.utils.LinkCleaner
 import me.schattgen.felis.utils.LinkCleaner.containsUrl
 import me.schattgen.felis.utils.ShareUtils.shareText
 
-private enum class HomeDestination {
-    Main,
-    Domains,
-    Params,
-    History,
+private object HomeRouteDestination {
+    const val Main = "main"
+    const val Domains = "domains"
+    const val Params = "params"
+    const val History = "history"
 }
 
 @Composable
@@ -50,16 +57,39 @@ fun HomeRoute() {
     var manualInputOpen by rememberSaveable { mutableStateOf(false) }
     var manualInput by rememberSaveable { mutableStateOf("") }
     var manualInputErrorResId by rememberSaveable { mutableStateOf<Int?>(null) }
-    var destination by rememberSaveable { mutableStateOf(HomeDestination.Main) }
-
-    BackHandler(enabled = destination != HomeDestination.Main) {
-        destination = HomeDestination.Main
-    }
+    val navController = rememberNavController()
 
     val snackbarCleaned = stringResource(R.string.snackbar_cleaned)
 
-    when (destination) {
-        HomeDestination.Main -> {
+    NavHost(
+        navController = navController,
+        startDestination = HomeRouteDestination.Main,
+        enterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                animationSpec = tween(220),
+            ) + fadeIn(animationSpec = tween(220))
+        },
+        exitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                animationSpec = tween(220),
+            ) + fadeOut(animationSpec = tween(220))
+        },
+        popEnterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.End,
+                animationSpec = tween(220),
+            ) + fadeIn(animationSpec = tween(220))
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.End,
+                animationSpec = tween(220),
+            ) + fadeOut(animationSpec = tween(220))
+        },
+    ) {
+        composable(HomeRouteDestination.Main) {
             HomeScreen(
                 snackbarHostState = snackbarHostState,
                 stats = stats,
@@ -88,22 +118,22 @@ fun HomeRoute() {
                         }
                     }
                 },
-                onParamsStatClick = { destination = HomeDestination.Params },
+                onParamsStatClick = { navController.navigate(HomeRouteDestination.Params) },
                 onAboutClick = { aboutOpen = true },
-                onHistoryClick = { destination = HomeDestination.History },
-                onShowAllDomainsClick = { destination = HomeDestination.Domains },
-                onShowAllParamsClick = { destination = HomeDestination.Params },
+                onHistoryClick = { navController.navigate(HomeRouteDestination.History) },
+                onShowAllDomainsClick = { navController.navigate(HomeRouteDestination.Domains) },
+                onShowAllParamsClick = { navController.navigate(HomeRouteDestination.Params) },
             )
         }
 
-        HomeDestination.Domains -> {
+        composable(HomeRouteDestination.Domains) {
             DomainsScreen(
                 domains = allDomains,
-                onBackClick = { destination = HomeDestination.Main },
+                onBackClick = { navController.navigateUp() },
             )
         }
 
-        HomeDestination.History -> {
+        composable(HomeRouteDestination.History) {
             HistoryScreen(
                 entries = historyEntries,
                 onEntryClick = { cleanedUrl ->
@@ -114,14 +144,14 @@ fun HomeRoute() {
                     )
                     scope.launch { snackbarHostState.showSnackbar(context.getString(R.string.snackbar_copied)) }
                 },
-                onBackClick = { destination = HomeDestination.Main },
+                onBackClick = { navController.navigateUp() },
             )
         }
 
-        HomeDestination.Params -> {
+        composable(HomeRouteDestination.Params) {
             RemovedParamsScreen(
                 items = allRemovedParams,
-                onBackClick = { destination = HomeDestination.Main },
+                onBackClick = { navController.navigateUp() },
             )
         }
     }
