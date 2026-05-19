@@ -22,6 +22,11 @@ android {
     }
 
     buildTypes {
+         debug {
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+            resValue("string", "app_name", "Felis Dev")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
